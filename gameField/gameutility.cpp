@@ -2,16 +2,13 @@
 
 #include "cell.h"
 
-#include <time.h>
-#include <stdlib.h>
-
 #include <QDebug>
 
 GameUtility::GameUtility()
 {
-    srand (time(NULL));
-
     m_settings = std::shared_ptr<Settings>(new Settings());
+
+    m_cellFactory = std::shared_ptr<CellFactory>(new CellFactory(m_settings));
 
     generateField();
 }
@@ -24,19 +21,13 @@ void GameUtility::generateField()
         for (int column = 0; column < m_settings->getColumnCount(); column++) {
 
             if (!row) {
-                m_cells.push_back(generateRandomCell(row, column, false));
+                m_cells.push_back(m_cellFactory->generateRandomCell(false));
             } else {
-                m_cells.push_back(generateRandomCell(row, column, true));
+                m_cells.push_back(m_cellFactory->generateRandomCell(true));
             }
         }
     }
 }
-
-bool GameUtility::checkGameField()
-{
-
-}
-
 
 std::shared_ptr<Cell> GameUtility::getCellByIndex(int cellIndex)
 {
@@ -53,16 +44,9 @@ std::shared_ptr<Settings> GameUtility::getSettings() const
     return m_settings;
 }
 
-void GameUtility::addNewRandomCell(int index, bool visible)
+void GameUtility::replaceByRandomCell(int index, bool visible)
 {
-    auto cell = getCellByIndex(index);
-    m_cells.replace(index, generateRandomCell(cell->getRow(), cell->getColumn(), visible));
-}
-
-std::shared_ptr<Cell> GameUtility::generateRandomCell(int row, int column, bool visible)
-{
-    int rndType = rand() % m_settings->getImageCount() + 1;
-    return std::shared_ptr<Cell>(new Cell(row, column, rndType, visible));
+    m_cells.replace(index, m_cellFactory->generateRandomCell(visible));
 }
 
 int GameUtility::findRow(int index)
@@ -73,5 +57,10 @@ int GameUtility::findRow(int index)
 int GameUtility::findColumn(int index)
 {
     return index % m_settings->getColumnCount();
+}
+
+int GameUtility::getCollectionSize()
+{
+    return m_cells.size();
 }
 

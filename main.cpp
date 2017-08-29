@@ -3,7 +3,7 @@
 
 #include <QtQml>
 
-#include "gamefieldmodel.h"
+#include "model/gamefieldmodel.h"
 
 int main(int argc, char *argv[])
 {

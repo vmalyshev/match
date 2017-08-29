@@ -1,12 +1,13 @@
 #ifndef GAMEUTILITY_H
 #define GAMEUTILITY_H
 
+#include <QList>
+
 #include <memory>
 
 #include "cell.h"
 #include "settings.h"
-
-#include <QList>
+#include "factory/cellfactory.h"
 
 class GameUtility
 {
@@ -15,25 +16,24 @@ public:
 
     void generateField();
 
-    bool checkGameField();
-
     std::shared_ptr<Cell> getCellByIndex(int cellIndex);
 
     void swapCells(int fromPosition, int toPosition);
 
     std::shared_ptr<Settings> getSettings() const;
 
-    void addNewRandomCell(int index, bool visible = true);
+    void replaceByRandomCell(int index, bool visible = true);
 
     int findRow(int index);
     int findColumn(int index);
+
+    int getCollectionSize();
 private:
     QList<std::shared_ptr<Cell>> m_cells;
 
-    std::shared_ptr<Cell> generateRandomCell(int row, int column, bool visible = true);
-
     std::shared_ptr<Settings> m_settings;
 
+    std::shared_ptr<CellFactory> m_cellFactory;
 };
 
 #endif // GAMEUTILITY_H

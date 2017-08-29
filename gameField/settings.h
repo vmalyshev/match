@@ -1,6 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <QList>
 
 class Settings
 {
@@ -19,6 +20,8 @@ private:
     int m_rowCount;
     int m_columnCount;
     int m_imageCount;
+
+    QList<int> m_objectTypes;
 };
 
 #endif // SETTINGS_H

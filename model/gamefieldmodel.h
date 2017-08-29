@@ -1,60 +1,57 @@
 #ifndef GAMEFIELDMODEL_H
 #define GAMEFIELDMODEL_H
 
-#include <QObject>
-
 #include <memory>
-#include <QAbstractListModel>
-#include <QAbstractTableModel>
 
-#include "settings.h"
-#include "gameutility.h"
+#include <QAbstractListModel>
+
+#include "../gameField/settings.h"
+#include "../gameField/gameutility.h"
 
 class GameFieldModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(int gameFieldRow READ getGameFieldRow CONSTANT)
     Q_PROPERTY(int gameFieldColumn READ getGameFieldColumn CONSTANT)
-
+    Q_PROPERTY(int gameScore READ getGameScore WRITE setGameScore NOTIFY gameScoreChanged)
 public:
     enum Roles {
         Type = Qt::UserRole + 1,
-        Row,
-        Column,
         Visible
     };
 
     explicit GameFieldModel(QObject *parent = nullptr);
 
-    int getGameFieldRow() const;
-    int getGameFieldColumn() const;
-
+    //override method from parent class
     int rowCount(const QModelIndex &parent) const;
-
     QVariant data(const QModelIndex &index, int role) const;
     QHash<int, QByteArray> roleNames() const;
 
+    //swap items
     Q_INVOKABLE void swapItem(int fromIndex, int toIndex);
-
     void swap(int fromPosition, int toPosition);
-
-
-    void swapScreens(int index1, int index2);
-
+    void verticalSwap(int fromIndex, int toIndex);
     void swapRange(int from, int to, int range);
 
+    //sending score value to view
+    int getGameScore() const;
+    void setGameScore(int gameScore);
+
+    //sending Row and Column value to view
+    int getGameFieldRow() const;
+    int getGameFieldColumn() const;
+
+    //check and delete all matches on the game field
     Q_INVOKABLE void checkMatch();
 private:
+    int m_gameScore;
     std::shared_ptr<GameUtility> m_utility;
 
     void deleteItem(int deleteIndex);
 
     inline void addMatch(QList<int>& deletedIndex, int firstIndex, int secondIndex, int thirdIndex);
-
 signals:
-    void swapRun(int index);
-public slots:
-
+    void gameScoreChanged(int gameScore);
 };
 
 #endif // GAMEFIELDMODEL_H

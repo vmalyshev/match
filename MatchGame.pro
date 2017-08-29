@@ -4,10 +4,12 @@ QT += qml quick
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    gamefieldmodel.cpp \
-    settings.cpp \
-    gameutility.cpp \
-    cell.cpp
+    model/gamefieldmodel.cpp \
+    gameField/settings.cpp \
+    gameField/gameutility.cpp \
+    gameField/cell.cpp \
+    file/jsonmanager.cpp \
+    gameField/factory/cellfactory.cpp
 
 RESOURCES += qml.qrc
 
@@ -18,7 +20,10 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    gamefieldmodel.h \
-    settings.h \
-    gameutility.h \
-    cell.h
+    model/gamefieldmodel.h \
+    gameField/settings.h \
+    gameField/gameutility.h \
+    gameField/cell.h \
+    file/fileoperation.h \
+    file/jsonmanager.h \
+    gameField/factory/cellfactory.h

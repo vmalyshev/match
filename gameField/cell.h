@@ -5,19 +5,12 @@
 class Cell
 {
 public:
-    Cell(int row, int column, int type, bool visible);
+    Cell(int type, bool visible);
 
     int getType() const;
     bool getVisible() const;
     void makeVisible();
     void makeUnvisible();
-
-    int getColumn() const;
-    void setColumn(int column);
-
-    int getRow() const;
-    void setRow(int row);
-
 private:
     int m_type;
     bool m_visible;

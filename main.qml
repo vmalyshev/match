@@ -1,5 +1,7 @@
 import QtQuick 2.5
 import QtQuick.Window 2.2
+import QtQuick.Layouts 1.1
+import QtQuick.Controls 1.4
 
 import game.ua 1.0
 
@@ -25,45 +27,28 @@ Window {
     property int gameFieldHeight: gameFieldCellSizePx * gameModel.gameFieldRow
     property int gameFieldWidth: gameFieldCellSizePx * gameModel.gameFieldColumn
 
-
-
-
-
     Item {
 
         id: gameField
-        width: gameFieldWidth;
-        height: gameFieldHeight;
+        width: gameFieldWidth
+        height: gameFieldHeight
 
         GridView {
             id: gameBoard
             anchors.fill: parent;
-            cellHeight: gameFieldCellSizePx;
-            cellWidth: gameFieldCellSizePx;
+            cellHeight: gameFieldCellSizePx
+            cellWidth: gameFieldCellSizePx
             model: gameModel;
 
-
-            clip: false
-            /*
-            highlight: Rectangle {
-                id: qwer
-                color: "transparent"
-                border.color: Qt.lighter("black")
-                border.width: 2
-
-            }*/
-
             delegate: Rectangle {
-                id: currentItem
                 height: gameBoard.cellHeight
                 width: gameBoard.cellWidth
 
-
                 color: {
-                    if (/*GridView.isCurrentItem &&*/ model.visible) {
-                        return "transparent";
-                    } else {
+                    if (GridView.isCurrentItem && model.visible) {
                         return "#DBDBDB";
+                    } else {
+                        return "transparent";
                     }
                 }
 
@@ -82,13 +67,12 @@ Window {
 
                     onClicked: {
                         console.log(model.index);
-                        gameBoard.currentIndex = model.index
-                        //gameModel.swapItem(0, 0);
+                        //gameBoard.currentIndex = model.index
 
-                        gameModel.swapItem(10, model.index);
-                        gameModel.swapItem(20, model.index);
+                        //gameModel.swapItem(10, model.index);
+                        //gameModel.swapItem(20, model.index);
+                        //gameModel.swapItem(25, model.index);
 
-                        /*
 
                         var startObjectRow = Logic.findRow(gameBoard.currentIndex, gameModel.gameFieldColumn);
                         var startObjectColumn = Logic.findColumn(gameBoard.currentIndex, gameModel.gameFieldColumn);
@@ -105,16 +89,11 @@ Window {
                         if (checkRow || checkColumn) {
                             gameModel.swapItem(gameBoard.currentIndex, model.index);
 
-                            //currentItem.
-
-                            //gameBoard.currentIndex = -1;
+                            gameBoard.currentIndex = 0;
                         }
                         else {
                             gameBoard.currentIndex = model.index
                         }
-                        */
-
-                        //gameModel.checkMatch()
                     }
                 }
 
@@ -130,10 +109,6 @@ Window {
                 }
             }
 */
-
-            displaced: Transition {
-                NumberAnimation { properties: "opacity"; to: 1.0; duration: 1000}
-            }
 
 
             move: Transition {
@@ -158,33 +133,36 @@ Window {
                 }
             }
 
-            /*
             add: Transition {
                 NumberAnimation {
-
-
                     properties: "opacity"
                     from: 0
                     to: 1.0
-                    duration: 5000
+                    duration: 500
                     easing {
                         type: Easing.OutInBounce;
-                        overshoot: 2500
+                        overshoot: 250
                     }
-
-                    /*
-                    properties: "opacity"
-                    from: 0
-                    to: 1.0
-                    duration: 1500
-                    easing {type: Easing.Linear; overshoot: 200 }
                 }
             }
-                    */
+        }
+    }
 
-            Component.onCompleted: {
-                //gameModel.checkMatch()
-            }
+    ColumnLayout {
+        anchors {
+            left: gameField.right
+        }
+
+        Text {
+            id: txtScoreLabel
+            text: "Total score"
+            font.bold: true
+            font.pixelSize: 20
+        }
+
+        Text {
+            id: txtScore
+            text: gameModel.gameScore
         }
     }
 }
