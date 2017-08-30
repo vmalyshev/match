@@ -48,10 +48,12 @@ private:
     std::shared_ptr<GameUtility> m_utility;
 
     void deleteItem(int deleteIndex);
-
     inline void addMatch(QList<int>& deletedIndex, int firstIndex, int secondIndex, int thirdIndex);
 signals:
     void gameScoreChanged(int gameScore);
+
+    void playerWon();
+    void playerLost();
 };
 
 #endif // GAMEFIELDMODEL_H

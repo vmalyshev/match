@@ -13,13 +13,21 @@ Window {
     visible: true
     width: 640
     height: 640
-    title: qsTr("Hello World")
+    title: qsTr("Match-3 GAME")
 
     GameModel {
         id: gameModel
 
         function getImgByType(type) {
             return Logic.images[type]
+        }
+
+        onPlayerWon: {
+            console.log("you win");
+        }
+
+        onPlayerLost: {
+            console.log("you lose");
         }
     }
 
@@ -69,11 +77,11 @@ Window {
                         console.log(model.index);
                         //gameBoard.currentIndex = model.index
 
-                        //gameModel.swapItem(10, model.index);
-                        //gameModel.swapItem(20, model.index);
+                        gameModel.swapItem(10, model.index);
+                        gameModel.swapItem(20, model.index);
                         //gameModel.swapItem(25, model.index);
 
-
+/*
                         var startObjectRow = Logic.findRow(gameBoard.currentIndex, gameModel.gameFieldColumn);
                         var startObjectColumn = Logic.findColumn(gameBoard.currentIndex, gameModel.gameFieldColumn);
 
@@ -94,6 +102,7 @@ Window {
                         else {
                             gameBoard.currentIndex = model.index
                         }
+                        */
                     }
                 }
 

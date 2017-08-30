@@ -3,20 +3,12 @@
 
 #include <QSet>
 
+#include "../utils/utils.h"
+
 GameFieldModel::GameFieldModel(QObject *parent) :
     QAbstractListModel(parent),
-    m_utility(std::shared_ptr<GameUtility>(new GameUtility()))
+    m_utility(std::shared_ptr<GameUtility>(new GameUtility("/home/work/Desktop/settings.json")))
 {
-}
-
-int GameFieldModel::getGameFieldRow() const
-{
-    return m_utility->getSettings()->getRowCount();
-}
-
-int GameFieldModel::getGameFieldColumn() const
-{
-    return m_utility->getSettings()->getColumnCount();
 }
 
 int GameFieldModel::rowCount(const QModelIndex &parent) const
@@ -53,9 +45,20 @@ QHash<int, QByteArray> GameFieldModel::roleNames() const
     return roles;
 }
 
+int GameFieldModel::getGameFieldRow() const
+{
+    return m_utility->getSettings()->getRowCount();
+}
+
+int GameFieldModel::getGameFieldColumn() const
+{
+    return m_utility->getSettings()->getColumnCount();
+}
+
 void GameFieldModel::swapItem(int fromPosition, int toPosition)
 {
-    swap(fromPosition, toPosition);
+    //swap(fromPosition, toPosition);
+    deleteItem(fromPosition);
 }
 
 
@@ -68,12 +71,11 @@ void GameFieldModel::swapRange(int from, int to, int range)
 
 void GameFieldModel::swap(int fromPosition, int toPosition)
 {
-    int rowStartObject = m_utility->findRow(fromPosition);
-    int columnStartObject = m_utility->findColumn(fromPosition);
+    int rowStartObject = Utils::findRow(fromPosition, getGameFieldRow());
+    int columnStartObject = Utils::findColumn(fromPosition, getGameFieldColumn());
 
-    int rowFinishObject = m_utility->findRow(toPosition);
-    int columnFinishObject = m_utility->findColumn(toPosition);
-
+    int rowFinishObject = Utils::findRow(toPosition, getGameFieldRow());
+    int columnFinishObject = Utils::findColumn(toPosition, getGameFieldColumn());
 
     if (rowStartObject == rowFinishObject) {
         if (toPosition > fromPosition) {
@@ -127,7 +129,7 @@ void GameFieldModel::setGameScore(int gameScore)
 
 void GameFieldModel::deleteItem(int deleteIndex)
 {
-    int currentColumn = m_utility->findColumn(deleteIndex);
+    int currentColumn = Utils::findColumn(deleteIndex, getGameFieldColumn());
 
     int prevIndex = deleteIndex;
 
@@ -171,10 +173,6 @@ void GameFieldModel::addMatch(QList<int>& collection, int firstIndex, int second
         if (!collection.count(thirdIndex)) {
             collection.push_back(thirdIndex);
         }
-
-        deleteItem(firstIndex);
-        deleteItem(secondIndex);
-        deleteItem(thirdIndex);
     }
 }
 
@@ -209,10 +207,7 @@ void GameFieldModel::checkMatch()
     std::sort(std::begin(deletedIndex), std::end(deletedIndex));
     std::reverse(std::begin(deletedIndex), std::end(deletedIndex));
 
-
     for(int value : deletedIndex) {
-        //qDebug() << value;
         //deleteItem(value);
-        //emit swapRun(value);
     }
 }

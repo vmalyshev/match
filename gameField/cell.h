@@ -1,7 +1,6 @@
 #ifndef CELL_H
 #define CELL_H
 
-
 class Cell
 {
 public:
@@ -9,6 +8,7 @@ public:
 
     int getType() const;
     bool getVisible() const;
+
     void makeVisible();
     void makeUnvisible();
 private:

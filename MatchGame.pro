@@ -9,7 +9,8 @@ SOURCES += main.cpp \
     gameField/gameutility.cpp \
     gameField/cell.cpp \
     file/jsonmanager.cpp \
-    gameField/factory/cellfactory.cpp
+    gameField/factory/cellfactory.cpp \
+    utils/utils.cpp
 
 RESOURCES += qml.qrc
 
@@ -26,4 +27,5 @@ HEADERS += \
     gameField/cell.h \
     file/fileoperation.h \
     file/jsonmanager.h \
-    gameField/factory/cellfactory.h
+    gameField/factory/cellfactory.h \
+    utils/utils.h

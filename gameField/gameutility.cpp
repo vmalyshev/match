@@ -5,9 +5,9 @@
 #include "cell.h"
 #include "../file/jsonmanager.h"
 
-GameUtility::GameUtility()
+GameUtility::GameUtility(const QString &filename)
 {
-    m_settings = std::shared_ptr<Settings>((new JsonManager())->readFromFile("C:/json/file.json"));
+    m_settings = std::shared_ptr<Settings>((new JsonManager())->readFromFile(filename));
     m_cellFactory = std::shared_ptr<CellFactory>(new CellFactory(m_settings));
     generateField();
 }
@@ -46,16 +46,6 @@ std::shared_ptr<Settings> GameUtility::getSettings() const
 void GameUtility::replaceByRandomCell(int index, bool visible)
 {
     m_cells.replace(index, m_cellFactory->generateRandomCell(visible));
-}
-
-int GameUtility::findRow(int index)
-{
-    return index / m_settings->getColumnCount();
-}
-
-int GameUtility::findColumn(int index)
-{
-    return index % m_settings->getColumnCount();
 }
 
 int GameUtility::getCollectionSize()

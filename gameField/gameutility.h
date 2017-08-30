@@ -2,6 +2,7 @@
 #define GAMEUTILITY_H
 
 #include <QList>
+#include <QString>
 
 #include <memory>
 
@@ -12,7 +13,7 @@
 class GameUtility
 {
 public:
-    GameUtility();
+    GameUtility(const QString& filename);
 
     void generateField();
 
@@ -23,9 +24,6 @@ public:
     std::shared_ptr<Settings> getSettings() const;
 
     void replaceByRandomCell(int index, bool visible = true);
-
-    int findRow(int index);
-    int findColumn(int index);
 
     int getCollectionSize();
 private:
