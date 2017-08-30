@@ -1,5 +1,6 @@
 
 var images = {
+    0 : "",
     1 : "qrc:///img/bulbasaur.png",
     2 : "qrc:///img/caterpie.png",
     3 : "qrc:///img/charmander.png",

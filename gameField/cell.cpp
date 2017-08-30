@@ -1,8 +1,7 @@
 #include "cell.h"
 
-Cell::Cell(int type, bool visible) :
-    m_type(type),
-    m_visible(visible)
+Cell::Cell(int type) :
+    m_type(type)
 {
 }
 
@@ -11,17 +10,7 @@ int Cell::getType() const
     return m_type;
 }
 
-bool Cell::getVisible() const
+int Cell::resetType()
 {
-    return m_visible;
-}
-
-void Cell::makeVisible()
-{
-    m_visible = true;
-}
-
-void Cell::makeUnvisible()
-{
-    m_visible = false;
+    m_type = 0;
 }

@@ -23,7 +23,7 @@ public:
 
     std::shared_ptr<Settings> getSettings() const;
 
-    void replaceByRandomCell(int index, bool visible = true);
+    void replaceByRandomCell(int index);
 
     int getCollectionSize();
 private:

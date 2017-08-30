@@ -12,9 +12,9 @@ class CellFactory
 public:
     CellFactory(std::shared_ptr<Settings>& settings);
 
-    std::shared_ptr<Cell> generateRandomCell(bool visible);
+    std::shared_ptr<Cell> generateRandomCell();
 
-    std::shared_ptr<Cell> generateCell(int type, bool visible);
+    std::shared_ptr<Cell> generateCell(int type);
 private:
     std::shared_ptr<Settings> m_settings;
 };

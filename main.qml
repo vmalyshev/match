@@ -38,6 +38,8 @@ Window {
 
     Item {
         id: gameField
+        y: -gameFieldCellSizePx
+
         width: gameFieldWidth
         height: gameFieldHeight
 
@@ -47,6 +49,7 @@ Window {
             cellHeight: gameFieldCellSizePx
             cellWidth: gameFieldCellSizePx
             model: gameModel;
+            interactive: false
 
             delegate: Rectangle {
                 height: gameBoard.cellHeight
@@ -77,9 +80,11 @@ Window {
                         console.log(model.index);
                         //gameBoard.currentIndex = model.index
 
-                        gameModel.swapItem(10, model.index);
+                        gameModel.swapItem(15, model.index);
                         gameModel.swapItem(20, model.index);
-                        //gameModel.swapItem(25, model.index);
+                        gameModel.swapItem(25, model.index);
+
+                        gameModel.fillEmptyCell();
 
 /*
                         var startObjectRow = Logic.findRow(gameBoard.currentIndex, gameModel.gameFieldColumn);
@@ -108,18 +113,18 @@ Window {
 
             }
 
-/*
-            move: Transition {
-                NumberAnimation {
-                    properties: "y"
-                    easing.type: Easing.InOutBack
-                    duration: 10000
 
-                }
+        move: Transition {
+            NumberAnimation {
+                properties: "y"
+                easing.type: Easing.OutBounce
+                duration: 1000
+
             }
-*/
+        }
 
 
+/*
             move: Transition {
                 SequentialAnimation {
                     PauseAnimation { duration: 200 }
@@ -127,7 +132,7 @@ Window {
                     NumberAnimation { easing.amplitude: 0.8; properties: "y"; duration: 800; easing.type: Easing.OutBounce }
                 }
             }
-
+*/
 
             remove: Transition {
                 NumberAnimation {
@@ -136,7 +141,7 @@ Window {
                     to: 1.0
                     duration: 1000
                     easing {
-                        type: Easing.OutInBounce;
+                        type: Easing.OutBounce;
                         overshoot: 500
                     }
                 }
@@ -146,11 +151,11 @@ Window {
                 NumberAnimation {
                     properties: "opacity"
                     from: 0
-                    to: 1.0
-                    duration: 500
+                    to: 1
+                    duration: 1000
                     easing {
-                        type: Easing.OutInBounce;
-                        overshoot: 250
+                        type: Easing.OutBounce;
+                        overshoot: 500
                     }
                 }
             }
@@ -159,6 +164,7 @@ Window {
 
     ColumnLayout {
         anchors {
+            top: parent.top
             left: gameField.right
         }
 

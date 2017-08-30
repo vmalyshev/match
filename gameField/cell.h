@@ -4,16 +4,14 @@
 class Cell
 {
 public:
-    Cell(int type, bool visible);
+    Cell(int type);
 
     int getType() const;
-    bool getVisible() const;
 
-    void makeVisible();
-    void makeUnvisible();
+    int resetType();
+
 private:
     int m_type;
-    bool m_visible;
 
     int m_row;
     int m_column;

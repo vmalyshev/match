@@ -20,9 +20,9 @@ void GameUtility::generateField()
         for (int column = 0; column < m_settings->getColumnCount(); column++) {
 
             if (!row) {
-                m_cells.push_back(m_cellFactory->generateRandomCell(false));
+                m_cells.push_back(m_cellFactory->generateCell(0));
             } else {
-                m_cells.push_back(m_cellFactory->generateRandomCell(true));
+                m_cells.push_back(m_cellFactory->generateRandomCell());
             }
         }
     }
@@ -43,9 +43,9 @@ std::shared_ptr<Settings> GameUtility::getSettings() const
     return m_settings;
 }
 
-void GameUtility::replaceByRandomCell(int index, bool visible)
+void GameUtility::replaceByRandomCell(int index)
 {
-    m_cells.replace(index, m_cellFactory->generateRandomCell(visible));
+    m_cells.replace(index, m_cellFactory->generateRandomCell());
 }
 
 int GameUtility::getCollectionSize()

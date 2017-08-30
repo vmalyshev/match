@@ -5,6 +5,9 @@
 
 #include "../utils/utils.h"
 
+#include <QTimer>
+#include <QEventLoop>
+
 GameFieldModel::GameFieldModel(QObject *parent) :
     QAbstractListModel(parent),
     m_utility(std::shared_ptr<GameUtility>(new GameUtility("/home/work/Desktop/settings.json")))
@@ -30,8 +33,6 @@ QVariant GameFieldModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Type:
         return currentCell->getType();
-    case Visible:
-        return currentCell->getVisible();
     }
 
     return QVariant();
@@ -41,7 +42,6 @@ QHash<int, QByteArray> GameFieldModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
     roles[Type] = "type";
-    roles[Visible] = "visible";
     return roles;
 }
 
@@ -127,6 +127,7 @@ void GameFieldModel::setGameScore(int gameScore)
     emit gameScoreChanged(gameScore);
 }
 
+
 void GameFieldModel::deleteItem(int deleteIndex)
 {
     int currentColumn = Utils::findColumn(deleteIndex, getGameFieldColumn());
@@ -143,14 +144,19 @@ void GameFieldModel::deleteItem(int deleteIndex)
             endRemoveRows();
 
             beginInsertRows(QModelIndex(), deleteIndex, deleteIndex);
-            m_utility->replaceByRandomCell(deleteIndex, false);
+            m_utility->replaceByRandomCell(deleteIndex);
             endInsertRows();
+
+            QEventLoop loop;
+            QTimer::singleShot(400, &loop, SLOT(quit()));
+            loop.exec();
+
+            m_utility->getCellByIndex(deleteIndex)->resetType();
+            emit dataChanged(index(deleteIndex, 0), index(deleteIndex, 0));
 
             continue;
         }
-
         verticalSwap(currentCellIndex, prevIndex);
-
         prevIndex = currentCellIndex;
     }
 }
@@ -176,7 +182,8 @@ void GameFieldModel::addMatch(QList<int>& collection, int firstIndex, int second
     }
 }
 
-void GameFieldModel::checkMatch()
+
+bool GameFieldModel::checkMatch()
 {
     QList<int> deletedIndex;
 
@@ -205,9 +212,68 @@ void GameFieldModel::checkMatch()
     }
 
     std::sort(std::begin(deletedIndex), std::end(deletedIndex));
-    std::reverse(std::begin(deletedIndex), std::end(deletedIndex));
+    //std::reverse(std::begin(deletedIndex), std::end(deletedIndex));
 
     for(int value : deletedIndex) {
         //deleteItem(value);
     }
+
+    return deletedIndex.empty();
+}
+
+void GameFieldModel::fillEmptyCell()
+{
+    /*
+    QEventLoop loop;
+    QTimer::singleShot(200, &loop, SLOT(quit()));
+    loop.exec();
+*/
+    //qDebug() << "change empty cell";
+
+
+
+    //m_utility->replaceByRandomCell(5, true);
+  //  emit dataChanged(index(0, 0), index(0, 0));
+
+//    verticalSwap(0, 5);
+
+    QEventLoop loop;
+
+    int currentColumn = Utils::findColumn(25, getGameFieldColumn());
+
+    qDebug() << currentColumn;
+
+
+    for (int currentCellIndex = 25;
+         currentCellIndex > currentColumn;
+         currentCellIndex -= getGameFieldColumn()) {
+
+        auto obj = m_utility->getCellByIndex(currentCellIndex);
+        if (!obj->getType()) {
+            qDebug() << currentCellIndex;
+
+            QTimer::singleShot(500, &loop, SLOT(quit()));
+            loop.exec();
+
+            m_utility->replaceByRandomCell(currentColumn);
+            emit dataChanged(index(currentColumn, 0), index(currentColumn, 0));
+
+            //QEventLoop loop;
+            QTimer::singleShot(500, &loop, SLOT(quit()));
+            loop.exec();
+
+            verticalSwap(currentColumn, currentCellIndex);
+        }
+
+    }
+
+
+/*
+
+    for (int currentCellIndex = 0;
+         currentCellIndex < m_utility->getCollectionSize();
+         currentCellIndex += getGameFieldColumn()) {
+
+    }
+    */
 }

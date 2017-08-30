@@ -17,7 +17,6 @@ class GameFieldModel : public QAbstractListModel
 public:
     enum Roles {
         Type = Qt::UserRole + 1,
-        Visible
     };
 
     explicit GameFieldModel(QObject *parent = nullptr);
@@ -42,13 +41,16 @@ public:
     int getGameFieldColumn() const;
 
     //check and delete all matches on the game field
-    Q_INVOKABLE void checkMatch();
+    Q_INVOKABLE bool checkMatch();
+
+    Q_INVOKABLE void fillEmptyCell();
 private:
     int m_gameScore;
     std::shared_ptr<GameUtility> m_utility;
 
     void deleteItem(int deleteIndex);
     inline void addMatch(QList<int>& deletedIndex, int firstIndex, int secondIndex, int thirdIndex);
+
 signals:
     void gameScoreChanged(int gameScore);
 
