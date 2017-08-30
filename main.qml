@@ -2,6 +2,7 @@ import QtQuick 2.5
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.4
+import QtQuick.Dialogs 1.2
 
 import game.ua 1.0
 
@@ -28,7 +29,6 @@ Window {
     property int gameFieldWidth: gameFieldCellSizePx * gameModel.gameFieldColumn
 
     Item {
-
         id: gameField
         width: gameFieldWidth
         height: gameFieldHeight

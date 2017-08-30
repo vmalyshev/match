@@ -1,15 +1,14 @@
 #include "gameutility.h"
 
-#include "cell.h"
-
 #include <QDebug>
+
+#include "cell.h"
+#include "../file/jsonmanager.h"
 
 GameUtility::GameUtility()
 {
-    m_settings = std::shared_ptr<Settings>(new Settings());
-
+    m_settings = std::shared_ptr<Settings>((new JsonManager())->readFromFile("C:/json/file.json"));
     m_cellFactory = std::shared_ptr<CellFactory>(new CellFactory(m_settings));
-
     generateField();
 }
 
