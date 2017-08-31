@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>Cell.qml</file>
         <file>logic.js</file>
         <file>img/bulbasaur.png</file>
         <file>img/caterpie.png</file>
@@ -12,5 +11,6 @@
         <file>img/pikachu.png</file>
         <file>img/psyduck.png</file>
         <file>img/venonat.png</file>
+        <file>settings/file.json</file>
     </qresource>
 </RCC>

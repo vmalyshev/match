@@ -30,7 +30,6 @@ public:
     Q_INVOKABLE void swapItem(int fromIndex, int toIndex);
     void swap(int fromPosition, int toPosition);
     void verticalSwap(int fromIndex, int toIndex);
-    void swapRange(int from, int to, int range);
 
     //sending score value to view
     int getGameScore() const;
@@ -43,7 +42,7 @@ public:
     //check and delete all matches on the game field
     Q_INVOKABLE bool checkMatch();
 
-    Q_INVOKABLE void fillEmptyCell();
+    Q_INVOKABLE void fillEmptyCell(int itemIndex);
 private:
     int m_gameScore;
     std::shared_ptr<GameUtility> m_utility;

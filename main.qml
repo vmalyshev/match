@@ -56,7 +56,7 @@ Window {
                 width: gameBoard.cellWidth
 
                 color: {
-                    if (GridView.isCurrentItem && model.visible) {
+                    if (GridView.isCurrentItem && model.type) {
                         return "#DBDBDB";
                     } else {
                         return "transparent";
@@ -66,11 +66,7 @@ Window {
                 Image {
                     height: gameBoard.cellHeight
                     width: gameBoard.cellWidth
-
-                 //   enabled: model.visible
-                  //  visible: model.visible
-
-                    source: gameModel.getImgByType(model.type)// : gameModel.getImgByType(9);
+                    source: gameModel.getImgByType(model.type)
                 }
 
                 MouseArea {
@@ -80,11 +76,20 @@ Window {
                         console.log(model.index);
                         //gameBoard.currentIndex = model.index
 
-                        gameModel.swapItem(15, model.index);
-                        gameModel.swapItem(20, model.index);
-                        gameModel.swapItem(25, model.index);
+                        //gameModel.swapItem(model.index, model.index);
 
-                        gameModel.fillEmptyCell();
+                 //       gameModel.swapItem(model.index, model.index);
+
+//                        gameModel.swapItem(29 - gameModel.gameFieldColumn, model.index);
+//                        gameModel.swapItem(29, model.index);
+
+                        //gameModel.swapItem(model.index, model.index);
+
+
+
+
+                        gameModel.checkMatch()
+
 
 /*
                         var startObjectRow = Logic.findRow(gameBoard.currentIndex, gameModel.gameFieldColumn);
@@ -93,21 +98,22 @@ Window {
                         var finishObjectRow = Logic.findRow(model.index, gameModel.gameFieldColumn);
                         var finishObjectColumn = Logic.findColumn(model.index, gameModel.gameFieldColumn);
 
-                        var checkRow = ((startObjectRow === finishObjectRow + 1 || startObjectRow === finishObjectRow - 1)
-                                        && startObjectColumn === finishObjectColumn);
+                        var checkRow = ((startObjectRow + 1 === finishObjectRow) || (startObjectRow - 1 === finishObjectRow))
+                                && (startObjectColumn === finishObjectColumn);
 
-                        var checkColumn = ((startObjectColumn === finishObjectColumn + 1 || startObjectColumn === finishObjectColumn - 1)
-                                           && startObjectRow === finishObjectRow);
+                        var checkColumn = ((startObjectColumn + 1 === finishObjectColumn) || (startObjectColumn - 1 === finishObjectColumn))
+                                && (startObjectRow === finishObjectRow);
 
-                        if (checkRow || checkColumn) {
+                        console.log(checkRow + " " + checkColumn)
+
+                        if ((checkRow || checkColumn) && (model.index >= gameModel.gameFieldColumn) && (gameBoard.currentIndex >= gameModel.gameFieldColumn)) {
                             gameModel.swapItem(gameBoard.currentIndex, model.index);
-
+                            gameModel.checkMatch();
                             gameBoard.currentIndex = 0;
-                        }
-                        else {
+                        } else {
                             gameBoard.currentIndex = model.index
-                        }
-                        */
+                       }
+                       */
                     }
                 }
 
@@ -115,12 +121,16 @@ Window {
 
 
         move: Transition {
-            NumberAnimation {
-                properties: "y"
-                easing.type: Easing.OutBounce
-                duration: 1000
-
+            SequentialAnimation {
+                NumberAnimation {
+                    properties: "y"
+                    easing.type: Easing.OutBounce
+                    duration: 100
+                    easing.amplitude: 0.1;
+                }
             }
+            //PauseAnimation { duration: 500 }
+
         }
 
 
@@ -128,21 +138,23 @@ Window {
             move: Transition {
                 SequentialAnimation {
                     PauseAnimation { duration: 200 }
-                    NumberAnimation { properties: "x"; duration: 200; }
+                    //NumberAnimation { properties: "x"; duration: 200; }
                     NumberAnimation { easing.amplitude: 0.8; properties: "y"; duration: 800; easing.type: Easing.OutBounce }
                 }
             }
-*/
 
+*/
             remove: Transition {
-                NumberAnimation {
-                    properties: "opacity"
-                    from: 0
-                    to: 1.0
-                    duration: 1000
-                    easing {
-                        type: Easing.OutBounce;
-                        overshoot: 500
+                SequentialAnimation {
+                    NumberAnimation {
+                        properties: "opacity"
+                        from: 0
+                        to: 1.0
+                        duration: 100
+                        easing {
+                            type: Easing.OutBounce;
+                            overshoot: 50
+                        }
                     }
                 }
             }
@@ -152,10 +164,10 @@ Window {
                     properties: "opacity"
                     from: 0
                     to: 1
-                    duration: 1000
+                    duration: 100
                     easing {
                         type: Easing.OutBounce;
-                        overshoot: 500
+                        overshoot: 50
                     }
                 }
             }

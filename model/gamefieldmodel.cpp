@@ -6,11 +6,21 @@
 #include "../utils/utils.h"
 
 #include <QTimer>
+#include <QTime>
+#include <QCoreApplication>
 #include <QEventLoop>
+
+
+#include <QThread>
+
+#include <QWaitCondition>
+#include <QMutex>
+
+
 
 GameFieldModel::GameFieldModel(QObject *parent) :
     QAbstractListModel(parent),
-    m_utility(std::shared_ptr<GameUtility>(new GameUtility("/home/work/Desktop/settings.json")))
+    m_utility(std::shared_ptr<GameUtility>(new GameUtility(":/settings/file.json")))
 {
 }
 
@@ -61,37 +71,22 @@ void GameFieldModel::swapItem(int fromPosition, int toPosition)
     deleteItem(fromPosition);
 }
 
-
-void GameFieldModel::swapRange(int from, int to, int range)
-{
-    for (int startRange = 0; startRange < range; startRange++) {
-        verticalSwap(from + (startRange * getGameFieldColumn()), to + (startRange * getGameFieldColumn()));
-    }
-}
-
 void GameFieldModel::swap(int fromPosition, int toPosition)
 {
-    int rowStartObject = Utils::findRow(fromPosition, getGameFieldRow());
-    int columnStartObject = Utils::findColumn(fromPosition, getGameFieldColumn());
-
-    int rowFinishObject = Utils::findRow(toPosition, getGameFieldRow());
-    int columnFinishObject = Utils::findColumn(toPosition, getGameFieldColumn());
-
-    if (rowStartObject == rowFinishObject) {
+    if (((fromPosition == toPosition + 1) || (fromPosition == toPosition - 1))) {
         if (toPosition > fromPosition) {
             beginMoveRows(QModelIndex(), fromPosition, fromPosition, QModelIndex(), toPosition+1);
         } else {
             beginMoveRows(QModelIndex(), fromPosition, fromPosition, QModelIndex(), toPosition);
         }
-
         m_utility->swapCells(fromPosition, toPosition);
-
         endMoveRows();
     }
 
-    if (columnStartObject == columnFinishObject) {
+    if (((fromPosition == toPosition + getGameFieldColumn()) || (fromPosition == toPosition - getGameFieldColumn()))) {
         verticalSwap(fromPosition, toPosition);
     }
+
 }
 
 void GameFieldModel::verticalSwap(int fromIndex, int toIndex)
@@ -130,6 +125,9 @@ void GameFieldModel::setGameScore(int gameScore)
 
 void GameFieldModel::deleteItem(int deleteIndex)
 {
+
+
+    QEventLoop loop;
     int currentColumn = Utils::findColumn(deleteIndex, getGameFieldColumn());
 
     int prevIndex = deleteIndex;
@@ -139,17 +137,12 @@ void GameFieldModel::deleteItem(int deleteIndex)
          currentCellIndex -= getGameFieldColumn()) {
 
         if (deleteIndex == currentCellIndex) {
-
             beginRemoveRows(QModelIndex(), deleteIndex, deleteIndex);
             endRemoveRows();
 
             beginInsertRows(QModelIndex(), deleteIndex, deleteIndex);
             m_utility->replaceByRandomCell(deleteIndex);
             endInsertRows();
-
-            QEventLoop loop;
-            QTimer::singleShot(400, &loop, SLOT(quit()));
-            loop.exec();
 
             m_utility->getCellByIndex(deleteIndex)->resetType();
             emit dataChanged(index(deleteIndex, 0), index(deleteIndex, 0));
@@ -159,6 +152,14 @@ void GameFieldModel::deleteItem(int deleteIndex)
         verticalSwap(currentCellIndex, prevIndex);
         prevIndex = currentCellIndex;
     }
+
+    fillEmptyCell(currentColumn + getGameFieldColumn());
+
+    //QEventLoop loop;
+    QTimer::singleShot(100, &loop, SLOT(quit()));
+    loop.exec();
+
+    //QEventLoop loop;
 }
 
 void GameFieldModel::addMatch(QList<int>& collection, int firstIndex, int secondIndex, int thirdIndex)
@@ -212,68 +213,27 @@ bool GameFieldModel::checkMatch()
     }
 
     std::sort(std::begin(deletedIndex), std::end(deletedIndex));
-    //std::reverse(std::begin(deletedIndex), std::end(deletedIndex));
 
-    for(int value : deletedIndex) {
-        //deleteItem(value);
+    for (int currentColumn = 0; currentColumn < getGameFieldColumn(); currentColumn++) {
+        for(int currentIndex : deletedIndex) {
+            if (Utils::findColumn(currentIndex, getGameFieldColumn()) == currentColumn) {
+                deleteItem(currentIndex);
+            }
+        }
     }
+
 
     return deletedIndex.empty();
 }
 
-void GameFieldModel::fillEmptyCell()
+void GameFieldModel::fillEmptyCell(int itemIndex)
 {
-    /*
-    QEventLoop loop;
-    QTimer::singleShot(200, &loop, SLOT(quit()));
-    loop.exec();
-*/
-    //qDebug() << "change empty cell";
+    int currentColumn = Utils::findColumn(itemIndex, getGameFieldColumn());
 
-
-
-    //m_utility->replaceByRandomCell(5, true);
-  //  emit dataChanged(index(0, 0), index(0, 0));
-
-//    verticalSwap(0, 5);
-
-    QEventLoop loop;
-
-    int currentColumn = Utils::findColumn(25, getGameFieldColumn());
-
-    qDebug() << currentColumn;
-
-
-    for (int currentCellIndex = 25;
-         currentCellIndex > currentColumn;
-         currentCellIndex -= getGameFieldColumn()) {
-
-        auto obj = m_utility->getCellByIndex(currentCellIndex);
-        if (!obj->getType()) {
-            qDebug() << currentCellIndex;
-
-            QTimer::singleShot(500, &loop, SLOT(quit()));
-            loop.exec();
-
-            m_utility->replaceByRandomCell(currentColumn);
-            emit dataChanged(index(currentColumn, 0), index(currentColumn, 0));
-
-            //QEventLoop loop;
-            QTimer::singleShot(500, &loop, SLOT(quit()));
-            loop.exec();
-
-            verticalSwap(currentColumn, currentCellIndex);
-        }
-
+    auto obj = m_utility->getCellByIndex(itemIndex);
+    if (!obj->getType()) {
+        m_utility->replaceByRandomCell(currentColumn);
+        emit dataChanged(index(currentColumn, 0), index(currentColumn, 0));
+        verticalSwap(currentColumn, itemIndex);
     }
-
-
-/*
-
-    for (int currentCellIndex = 0;
-         currentCellIndex < m_utility->getCollectionSize();
-         currentCellIndex += getGameFieldColumn()) {
-
-    }
-    */
 }
